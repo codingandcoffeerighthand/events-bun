@@ -10,6 +10,7 @@ erDiagram
     name string
     email string
     hashed_password string    
+    is_active bool
   }
 
   m_events {

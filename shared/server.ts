@@ -23,7 +23,7 @@ export class App {
 
   start(port: number) {
     this.app.use(errHandler)
-    const server = this.app.listen(port,  () => {
+    const server = this.app.listen(port,() => {
       console.log(`Listening on port ${port}`)
     })
     process.on('SIGTERM', () => {
