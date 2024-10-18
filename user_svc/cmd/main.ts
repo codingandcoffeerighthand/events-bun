@@ -1,9 +1,12 @@
 import { getFlag } from "@shared/utils/getFlag";
 import { getConfigs } from "@shared/utils/configs";
 import type { IConfig } from "../internal/config/config";
-import { App } from "@shared/server";
+import { App } from "@shared/server/server";
 import { migrateDB } from "../internal/infra/db/migrate_db";
 import { Client } from "pg";
+import { UsersRepo } from "../internal/infra/users.repo";
+import { UserUC } from "../internal/uc/user/user.uc";
+import { UserAPi } from "../internal/api/users";
 async function main() {
 	const config = await getConfigs<IConfig>(getFlag("-c"));
 
@@ -41,7 +44,15 @@ async function main() {
 		}
 	}
 	const app = new App();
-	app.addRouter(require("../internal/api/hello").default);
+
+	// user
+	const [userRepo, dbCleanup] = UsersRepo.create(config.db);
+	app.addCleanup(dbCleanup);
+	const userUc = new UserUC(userRepo);
+	const userApi = new UserAPi(userUc);
+	app.addRouter(userApi.api());
+
+	// start app
 	app.start(config.port);
 }
 

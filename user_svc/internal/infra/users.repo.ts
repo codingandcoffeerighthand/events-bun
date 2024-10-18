@@ -2,6 +2,16 @@ import { Pool } from "pg";
 import type { User } from "../domain/user";
 import type { IUserRepository } from "./db.interface";
 import type { DBConfig } from "../config/config";
+import {
+	createUser,
+	getList,
+	getListUserByIDs,
+	getUser,
+	getUserByEmail,
+	getUserByName,
+	searchUsers,
+	updateUser,
+} from "./db/user";
 export class UsersRepo implements IUserRepository {
 	private pool: Pool;
 	private constructor(cfg: DBConfig) {
@@ -18,35 +28,54 @@ export class UsersRepo implements IUserRepository {
 		const repo = new UsersRepo(cfg);
 		return [repo, () => repo.pool.end()];
 	}
-	get(id: string): Promise<User> {
-		throw new Error("Method not implemented.");
+	async get(id: string): Promise<User> {
+		const rs = await getUser(this.pool, id);
+		return rs;
 	}
-	create(user: User): Promise<User> {
-		throw new Error("Method not implemented.");
+	async create(user: User): Promise<User> {
+		const userId = await createUser(
+			this.pool,
+			user.name,
+			user.email,
+			user.getHashedPassword(),
+			user.isActive(),
+		);
+		const rs = getUser(this.pool, userId);
+		return rs;
 	}
-	update(user: User): Promise<User> {
-		throw new Error("Method not implemented.");
+	async update(user: User): Promise<User> {
+		await updateUser(
+			this.pool,
+			user.getId(),
+			user.name,
+			user.email,
+			user.getHashedPassword(),
+			user.isActive(),
+		);
+		return await getUser(this.pool, user.getId());
 	}
-	delete(id: string): Promise<void> {
-		throw new Error("Method not implemented.");
+	async delete(id: string): Promise<void> {
+		const user = await getUser(this.pool, id);
+		user.disable();
+		await this.update(user);
 	}
 	getUserByEmail(email: string): Promise<User> {
-		throw new Error("Method not implemented.");
+		return getUserByEmail(this.pool, email);
 	}
 	getUserByName(name: string): Promise<User> {
-		throw new Error("Method not implemented.");
+		return getUserByName(this.pool, name);
 	}
 	getListUserByIDs(ids: string[]): Promise<User[]> {
-		throw new Error("Method not implemented.");
+		return getListUserByIDs(this.pool, ids);
 	}
 	getList(offset: number, limit: number): Promise<User[]> {
-		throw new Error("Method not implemented.");
+		return getList(this.pool, offset, limit);
 	}
 	searchUsers(
 		query: { name?: string; email?: string },
 		offset: number,
 		limit: number,
 	): Promise<User[]> {
-		throw new Error("Method not implemented.");
+		return searchUsers(this.pool, query, offset, limit);
 	}
 }

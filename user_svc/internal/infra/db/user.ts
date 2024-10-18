@@ -3,7 +3,7 @@ import { User } from "../../domain/user";
 
 export async function getUser(db: Pool, id: string): Promise<User> {
 	const result = await db.query("SELECT * FROM users WHERE id = $1", [id]);
-	const user = new User(result.rows[0].id, result.rows[0].name);
+	const user = new User(result.rows[0].name, result.rows[0].email);
 	user.setHashedPassword(result.rows[0].hashed_password);
 	user.setId(result.rows[0].id);
 	return user;
@@ -14,11 +14,12 @@ export async function createUser(
 	email: string,
 	hasshedPassword: string,
 	is_active: boolean,
-): Promise<void> {
-	await db.query(
-		"INSERT INTO users (name, email, hashed_password, is_active) VALUES ($1, $2, $3, $4)",
+): Promise<string> {
+	const rs = await db.query(
+		"INSERT INTO users (name, email, hashed_password, is_active) VALUES ($1, $2, $3, $4) RETURNING id",
 		[name, email, hasshedPassword, is_active],
 	);
+	return rs.rows[0].id;
 }
 
 export async function updateUser(
