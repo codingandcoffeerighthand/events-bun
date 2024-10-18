@@ -48,7 +48,7 @@ async function main() {
 	// user
 	const [userRepo, dbCleanup] = UsersRepo.create(config.db);
 	app.addCleanup(dbCleanup);
-	const userUc = new UserUC(userRepo);
+	const userUc = new UserUC(userRepo, config.jwt);
 	const userApi = new UserAPi(userUc);
 	app.addRouter(userApi.api());
 

@@ -3,7 +3,7 @@ import cors from "cors";
 import helmet from "helmet";
 import compression from "compression";
 import morgan from "morgan";
-import { errHandler } from "../middleware/errHandler";
+import { errHandler, notFoundHandler } from "../middleware/errHandler";
 
 export class App {
 	private app: express.Application;
@@ -30,7 +30,7 @@ export class App {
 	}
 
 	start(port: number) {
-		this.app.use(errHandler);
+		this.app.use(notFoundHandler, errHandler);
 		const server = this.app.listen(port, () => {
 			console.log(`Listening on port ${port}`);
 		});

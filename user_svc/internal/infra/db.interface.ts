@@ -8,7 +8,7 @@ export interface IUserRepository {
 	getUserByEmail(email: string): Promise<User>;
 	getUserByName(name: string): Promise<User>;
 	getListUserByIDs(ids: string[]): Promise<User[]>;
-	getList(offset: number, limit: number): Promise<User[]>;
+	getList(offset: number, limit: number): Promise<[User[], number]>;
 
 	searchUsers(
 		query: {
@@ -17,5 +17,5 @@ export interface IUserRepository {
 		},
 		offset: number,
 		limit: number,
-	): Promise<User[]>;
+	): Promise<[User[], number]>;
 }

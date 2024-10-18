@@ -1,6 +1,7 @@
 export interface IConfig {
 	port: number;
 	db: DBConfig;
+	jwt: JWTConfig;
 }
 
 export interface DBConfig {
@@ -10,4 +11,10 @@ export interface DBConfig {
 	password: string;
 	database: string;
 	ssl: boolean;
+}
+
+export interface JWTConfig {
+	secret: string;
+	accessTokenTTL: string;
+	refreshTokenTTL: string;
 }

@@ -5,13 +5,13 @@
   "scripts": {
     "user-svc": "bun run --watch ./user_svc/cmd/main.ts -c ./user_svc/configs.yaml",
     "user_db": "bun run ./user_svc/cmd/main.ts -c ./user_svc/configs.yaml -db ./user_svc/db/migrations/up.sql"
-
   },
   "devDependencies": {
     "@types/bun": "latest",
     "@types/compression": "^1.7.5",
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
+    "@types/jsonwebtoken": "^9.0.7",
     "@types/morgan": "^1.9.9"
   },
   "peerDependencies": {
@@ -23,6 +23,7 @@
     "cors": "^2.8.5",
     "express": "^4.21.1",
     "helmet": "^8.0.0",
+    "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "pg": "^8.13.0",
     "yaml": "^2.6.0"

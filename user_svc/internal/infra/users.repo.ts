@@ -29,8 +29,13 @@ export class UsersRepo implements IUserRepository {
 		return [repo, () => repo.pool.end()];
 	}
 	async get(id: string): Promise<User> {
-		const rs = await getUser(this.pool, id);
-		return rs;
+		try {
+			const rs = await getUser(this.pool, id);
+			return rs;
+		} catch (error) {
+			console.error(error);
+			throw error;
+		}
 	}
 	async create(user: User): Promise<User> {
 		const userId = await createUser(
@@ -68,14 +73,14 @@ export class UsersRepo implements IUserRepository {
 	getListUserByIDs(ids: string[]): Promise<User[]> {
 		return getListUserByIDs(this.pool, ids);
 	}
-	getList(offset: number, limit: number): Promise<User[]> {
+	getList(offset: number, limit: number): Promise<[User[], number]> {
 		return getList(this.pool, offset, limit);
 	}
 	searchUsers(
 		query: { name?: string; email?: string },
 		offset: number,
 		limit: number,
-	): Promise<User[]> {
+	): Promise<[User[], number]> {
 		return searchUsers(this.pool, query, offset, limit);
 	}
 }

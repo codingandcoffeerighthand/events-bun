@@ -11,11 +11,11 @@ export class User {
 		this.email = email;
 		this.is_active = true;
 	}
-	public setPassword(password: string) {
-		this.hashed_password = Bun.password.hashSync(password);
+	public async setPassword(password: string) {
+		this.hashed_password = await Bun.password.hash(password);
 	}
-	public comparePassword(password: string) {
-		return Bun.password.verifySync(this.hashed_password, password);
+	public async comparePassword(password: string) {
+		return await Bun.password.verify(password, this.hashed_password);
 	}
 	public setId(id: string) {
 		this.id = id;

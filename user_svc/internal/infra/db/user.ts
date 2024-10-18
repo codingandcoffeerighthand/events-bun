@@ -67,17 +67,27 @@ export async function getListUserByIDs(
 	});
 }
 
-export async function getList(db: Pool, offset: number, limit: number) {
+export async function getList(
+	db: Pool,
+	offset: number,
+	limit: number,
+): Promise<[User[], number]> {
+	const count = Number.parseInt(
+		(await db.query("SELECT COUNT(id) FROM users")).rows[0].count,
+	);
 	const result = await db.query("SELECT * FROM users LIMIT $1 OFFSET $2", [
 		limit,
 		offset,
 	]);
-	return result.rows.map((row) => {
-		const user = new User(row.id, row.name);
-		user.setHashedPassword(row.hashed_password);
-		user.setId(row.id);
-		return user;
-	});
+	return [
+		result.rows.map((row) => {
+			const user = new User(row.id, row.name);
+			user.setHashedPassword(row.hashed_password);
+			user.setId(row.id);
+			return user;
+		}),
+		count,
+	];
 }
 
 export async function searchUsers(
@@ -88,15 +98,26 @@ export async function searchUsers(
 	},
 	offset: number,
 	limit: number,
-): Promise<User[]> {
+): Promise<[User[], number]> {
 	const result = await db.query(
 		"SELECT * FROM users WHERE name like %$1% OR email = %$2% LIMIT $3 OFFSET $4",
 		[query.name, query.email, limit, offset],
 	);
-	return result.rows.map((row) => {
-		const user = new User(row.id, row.name);
-		user.setHashedPassword(row.hashed_password);
-		user.setId(row.id);
-		return user;
-	});
+	const count = Number.parseInt(
+		(
+			await db.query(
+				"SELECT count(id) FROM users WHERE name like %$1% OR email = %$2%",
+				[query.name, query.email],
+			)
+		).rows[0].count,
+	);
+	return [
+		result.rows.map((row) => {
+			const user = new User(row.id, row.name);
+			user.setHashedPassword(row.hashed_password);
+			user.setId(row.id);
+			return user;
+		}),
+		count,
+	];
 }
