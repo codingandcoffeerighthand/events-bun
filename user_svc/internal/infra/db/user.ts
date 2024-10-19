@@ -98,18 +98,21 @@ export async function searchUsers(
 	},
 	offset: number,
 	limit: number,
+	ids?: string[],
 ): Promise<[User[], number]> {
+	let queryString = "SELECT * FROM users WHERE name like %$1% OR email = %$2%";
+	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
+	let ps: any[] = [query.name, query.email];
+	if (ids) {
+		queryString = `${query} AND id in ($3)`;
+		ps = [query.name, query.email, ids];
+	}
 	const result = await db.query(
-		"SELECT * FROM users WHERE name like %$1% OR email = %$2% LIMIT $3 OFFSET $4",
-		[query.name, query.email, limit, offset],
+		`${queryString} LIMIT $${ps.length} OFFSET ${ps.length + 1}`,
+		[...ps, limit, offset],
 	);
 	const count = Number.parseInt(
-		(
-			await db.query(
-				"SELECT count(id) FROM users WHERE name like %$1% OR email = %$2%",
-				[query.name, query.email],
-			)
-		).rows[0].count,
+		(await db.query(queryString, ps)).rows[0].count,
 	);
 	return [
 		result.rows.map((row) => {

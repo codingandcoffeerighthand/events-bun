@@ -17,5 +17,6 @@ export interface IUserRepository {
 		},
 		offset: number,
 		limit: number,
+		ids?: string[],
 	): Promise<[User[], number]>;
 }

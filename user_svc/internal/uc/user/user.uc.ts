@@ -45,6 +45,7 @@ export class UserUC {
 			},
 			req.offset,
 			req.limit,
+			req.ids,
 		);
 		const r: ListUserResponse = {
 			users: [],
@@ -121,5 +122,10 @@ export class UserUC {
 	public async changePassword(req: ChangePasswordRequest): Promise<boolean> {
 		const user = await this._userrepo.getUserByEmail(req.email);
 		const checkpass = await user.comparePassword(req.oldpassword);
+		if (checkpass) {
+			await user.setPassword(req.newpassword);
+			return true;
+		}
+		return false;
 	}
 }

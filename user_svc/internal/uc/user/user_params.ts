@@ -36,6 +36,7 @@ export function userInfoResponse(user: User): UserInfoResponse {
 export type ListUserRequest = {
 	name?: string;
 	email?: string;
+	ids?: string[];
 	offset: number;
 	limit: number;
 };

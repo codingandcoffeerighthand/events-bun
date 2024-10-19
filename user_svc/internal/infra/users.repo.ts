@@ -80,7 +80,8 @@ export class UsersRepo implements IUserRepository {
 		query: { name?: string; email?: string },
 		offset: number,
 		limit: number,
+		ids?: string[],
 	): Promise<[User[], number]> {
-		return searchUsers(this.pool, query, offset, limit);
+		return searchUsers(this.pool, query, offset, limit, ids);
 	}
 }
