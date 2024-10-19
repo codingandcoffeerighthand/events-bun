@@ -1,2 +1,2 @@
-generate-proto-events-window:
-	@protoc --plugin=protoc-gen-ts=./node_modules/.bin/protoc-gen-ts.exe --ts_opt=esModuleInterop=true --ts_out=./gen/ ./shared/proto/event_service.proto
+gen:
+	@protoc --plugin=protoc-gen-ts_proto=./node_modules/.bin/protoc-gen-ts_proto.exe --ts_proto_out=./shared/proto/gen --ts_proto_opt=outputServices=grpc-js,outputClientImpl=grpc-js  --proto_path=./shared/proto ./shared/proto/event_service.proto

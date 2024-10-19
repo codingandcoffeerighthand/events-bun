@@ -8,10 +8,13 @@ import {
 	type EventInfo,
 	type UpdateEventRequest,
 } from "./eventParams";
+import type { EventPub } from "../../infra/queue/evenPub";
+import type { EventUpdateEvent } from "../../infra/queue/events/eventUpdateEvent";
 
 export class EventUc {
 	protected readonly _eventRepo: IEventRepository;
-	constructor(eventRepo: IEventRepository) {
+	constructor(eventRepo: IEventRepository,
+		private readonly _eventPub: EventPub) {
 		this._eventRepo = eventRepo;
 	}
 
@@ -46,6 +49,9 @@ export class EventUc {
 			if (event.cancelEvent(p.user_id)) {
 				await this._eventRepo.save(event);
 			}
+			await this._eventPub.publishtCancelEvent({
+				event_id: p.event_id,
+			});
 		}
 		throw new ErrorResponse(404, "Event not found");
 	}
@@ -63,6 +69,9 @@ export class EventUc {
 				organizer: p.params.organizer,
 			});
 			await this._eventRepo.save(event);
+			await this._eventPub.publishUpdateEvent({
+				event_id: p.event_id,
+			})
 		}
 		throw new ErrorResponse(404, "Event not found");
 	}
@@ -94,4 +103,5 @@ export class EventUc {
 		}
 		return false;
 	}
+
 }
