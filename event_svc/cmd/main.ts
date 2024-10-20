@@ -9,19 +9,15 @@ import { EventService } from "../internal/app/service";
 import { GrpcServer } from "../internal/app/app";
 
 async function main() {
-  let cleanup: () => void = () => { };
+  //  cleanup: () => void = () => { };
   const config = await getConfigs<Config>(getFlag("-c"));
-  if (!connectMongo(config.mongo)) {
+  if (!(await connectMongo(config.mongo))) {
     throw new Error("MongoDB not connected");
   }
   try {
     const repo = new EventDomainRepo()
     const eventPub = new EventPub(config.redis);
     await eventPub.connect();
-    cleanup = () => {
-      eventPub.quit();
-      cleanup = () => { };
-    };
     const uc = new EventUc(repo, eventPub);
     const service = new EventService(uc);
     const server = new GrpcServer(service.service, config.addr);
@@ -29,10 +25,7 @@ async function main() {
   } catch (error) {
     // biome-ignore lint/complexity/noUselessCatch: <explanation>
     throw error;
-  } finally {
-    cleanup();
   }
-
 }
 
 try {

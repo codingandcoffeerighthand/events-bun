@@ -24,6 +24,18 @@ export class EventDomainRepo implements IEventRepository {
 	}
 
 	async save(event: EventDomain): Promise<void> {
+		if (!event.id) {
+			await EventDomainModel.create({
+				title: event.title,
+				description: event.description,
+				start_date: event.start_date,
+				end_date: event.end_date,
+				location: event.location,
+				organizer: event.organizer,
+				attendees: event.attendees,
+			});
+			return
+		}
 		await EventDomainModel.findByIdAndUpdate(
 			event.id,
 			{

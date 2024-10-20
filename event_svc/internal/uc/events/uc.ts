@@ -39,6 +39,11 @@ export class EventUc {
 			params.active,
 		);
 		await this._eventRepo.save(event);
+
+		await this._eventPub.publishtCancelEvent({
+			event_id: "create",
+		});
+
 		return createEventInfo(event);
 	}
 

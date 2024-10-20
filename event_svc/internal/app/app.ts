@@ -8,8 +8,11 @@ export class GrpcServer {
 	}
 
 	start() {
-		this.server.bindAsync(this.addr, grpc.ServerCredentials.createInsecure(), () => {
-			this.server.start();
+		this.server.bindAsync(this.addr, grpc.ServerCredentials.createInsecure(), (err, port) => {
+			console.log(`Event service running on ${port}`);
+			if (err) {
+				throw err;
+			}
 		});
 	}
 }

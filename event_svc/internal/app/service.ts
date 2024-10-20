@@ -28,6 +28,7 @@ export class EventService {
 			const event = await this._eventUc.createEvent(par);
 			callback(null, { event: mapEventInfo(event) });
 		} catch (err) {
+			console.error(err);
 			callback({ code: status.INTERNAL }, null);
 		}
 	}
@@ -127,8 +128,8 @@ export class EventService {
 	}
 
 	service: proto.EventServiceServer = {
-		getEvent: this.getEvent,
-		createEvent: this.createEvent,
+		getEvent: this.getEvent.bind(this),
+		createEvent: this.createEvent.bind(this),
 		updateEvent: this.updateEvent,
 		addAttendee: this.addAttendee,
 		removeAttendee: this.removeAttendee,

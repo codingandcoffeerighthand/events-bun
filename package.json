@@ -3,8 +3,9 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "user-svc": "bun run --watch ./user_svc/cmd/main.ts -c ./user_svc/configs.yaml",
-    "user_db": "bun run ./user_svc/cmd/main.ts -c ./user_svc/configs.yaml -db ./user_svc/db/migrations/up.sql"
+    "api": "bun run --watch ./user_svc/cmd/main.ts -c ./user_svc/configs.yaml",
+    "user_db": "bun run ./user_svc/cmd/main.ts -c ./user_svc/configs.yaml -db ./user_svc/db/migrations/up.sql",
+    "event": "bun run --watch ./event_svc/cmd/main.ts -c ./event_svc/configs.yaml"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -17,7 +18,7 @@
     "ts-proto": "^2.2.4"
   },
   "peerDependencies": {
-    "typescript": "^5.0.0"
+    "typescript": "^5.6.3"
   },
   "dependencies": {
     "@grpc/grpc-js": "^1.12.2",

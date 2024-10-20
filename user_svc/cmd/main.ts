@@ -56,6 +56,7 @@ async function main() {
 
 	// event
 	const eventClient = new EventClient(config.events.url);
+	eventClient.connect();
 	const eventApi = new EventAPI(eventClient, userUc);
 	app.addRouter(eventApi.api());
 
