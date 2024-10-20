@@ -10,12 +10,6 @@ export class EventClient {
     )
   }
   connect() {
-    this.client.waitForReady(4000, err => {
-      if (err) {
-        console.error(`Failed to connect to events service GRPC ${err}`);
-      }
-      console.log("Connected to events service GRPC");
-    })
   }
   createEvent(params: CreateEventRequest) {
     return new Promise<CreateEventResponse>((res, rej) => {

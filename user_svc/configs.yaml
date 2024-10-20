@@ -11,4 +11,4 @@ jwt:
   accessTokenTTL: 15m
   refreshTokenTTL: 7d
 events:
-  url: localhost:5002
+  url: 0.0.0.0:5002
