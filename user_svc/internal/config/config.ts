@@ -2,6 +2,7 @@ export interface IConfig {
 	port: number;
 	db: DBConfig;
 	jwt: JWTConfig;
+	events: EventConfig;
 }
 
 export interface DBConfig {
@@ -17,4 +18,9 @@ export interface JWTConfig {
 	secret: string;
 	accessTokenTTL: string;
 	refreshTokenTTL: string;
+}
+
+
+export interface EventConfig {
+	url: string;
 }

@@ -9,7 +9,7 @@ export class EventDomain {
 		public organizer: string,
 		public attendees: string[],
 		public active = true,
-	) {}
+	) { }
 
 	addAttendee(attendee: string) {
 		this.attendees.push(attendee);

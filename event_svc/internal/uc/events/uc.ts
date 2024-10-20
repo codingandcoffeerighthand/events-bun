@@ -103,5 +103,15 @@ export class EventUc {
 		}
 		return false;
 	}
-
+	async listEvents(p: {
+		search?: string,
+		offset?: number,
+		limit?: number
+	}) {
+		const rs = await this._eventRepo.findAll(p);
+		return {
+			events: rs.events.map(createEventInfo),
+			total: rs.total
+		}
+	}
 }

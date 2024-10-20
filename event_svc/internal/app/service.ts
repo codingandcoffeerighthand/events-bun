@@ -108,7 +108,23 @@ export class EventService {
 			callback({ code: status.INTERNAL }, { success: false });
 		}
 	}
-
+	async listEvents(
+		call: ServerUnaryCall<proto.ListEventsRequest, proto.ListEventsResponse>,
+		callback: sendUnaryData<proto.ListEventsResponse>,
+	) {
+		try {
+			const req = call.request;
+			const events = await this._eventUc.listEvents({
+				search: req.search,
+				offset: req.offset,
+				limit: req.limit,
+			});
+			const eventsList = events.events.map((e) => mapEventInfo(e));
+			callback(null, { events: eventsList, total: events.total });
+		} catch (err) {
+			callback({ code: status.INTERNAL }, null);
+		}
+	}
 
 	service: proto.EventServiceServer = {
 		getEvent: this.getEvent,
@@ -118,5 +134,6 @@ export class EventService {
 		removeAttendee: this.removeAttendee,
 		checkAttendee: this.checkAttendee,
 		cancelEvent: this.cancelEvent,
+		listEvents: this.listEvents,
 	};
 }

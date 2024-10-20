@@ -10,3 +10,5 @@ jwt:
   secret: secret
   accessTokenTTL: 15m
   refreshTokenTTL: 7d
+events:
+  url: http://localhost:3001

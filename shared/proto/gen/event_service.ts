@@ -108,6 +108,17 @@ export interface CheckAttendeeResponse {
   success: boolean;
 }
 
+export interface ListEventsRequest {
+  limit?: number | undefined;
+  offset?: number | undefined;
+  search?: string | undefined;
+}
+
+export interface ListEventsResponse {
+  events: EventInfo[];
+  total: number;
+}
+
 function createBaseEventInfo(): EventInfo {
   return {
     id: "",
@@ -1461,6 +1472,174 @@ export const CheckAttendeeResponse: MessageFns<CheckAttendeeResponse> = {
   },
 };
 
+function createBaseListEventsRequest(): ListEventsRequest {
+  return { limit: undefined, offset: undefined, search: undefined };
+}
+
+export const ListEventsRequest: MessageFns<ListEventsRequest> = {
+  encode(message: ListEventsRequest, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    if (message.limit !== undefined) {
+      writer.uint32(8).uint32(message.limit);
+    }
+    if (message.offset !== undefined) {
+      writer.uint32(16).uint32(message.offset);
+    }
+    if (message.search !== undefined) {
+      writer.uint32(26).string(message.search);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ListEventsRequest {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListEventsRequest();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 8) {
+            break;
+          }
+
+          message.limit = reader.uint32();
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.offset = reader.uint32();
+          continue;
+        }
+        case 3: {
+          if (tag !== 26) {
+            break;
+          }
+
+          message.search = reader.string();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ListEventsRequest {
+    return {
+      limit: isSet(object.limit) ? globalThis.Number(object.limit) : undefined,
+      offset: isSet(object.offset) ? globalThis.Number(object.offset) : undefined,
+      search: isSet(object.search) ? globalThis.String(object.search) : undefined,
+    };
+  },
+
+  toJSON(message: ListEventsRequest): unknown {
+    const obj: any = {};
+    if (message.limit !== undefined) {
+      obj.limit = Math.round(message.limit);
+    }
+    if (message.offset !== undefined) {
+      obj.offset = Math.round(message.offset);
+    }
+    if (message.search !== undefined) {
+      obj.search = message.search;
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ListEventsRequest>, I>>(base?: I): ListEventsRequest {
+    return ListEventsRequest.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ListEventsRequest>, I>>(object: I): ListEventsRequest {
+    const message = createBaseListEventsRequest();
+    message.limit = object.limit ?? undefined;
+    message.offset = object.offset ?? undefined;
+    message.search = object.search ?? undefined;
+    return message;
+  },
+};
+
+function createBaseListEventsResponse(): ListEventsResponse {
+  return { events: [], total: 0 };
+}
+
+export const ListEventsResponse: MessageFns<ListEventsResponse> = {
+  encode(message: ListEventsResponse, writer: BinaryWriter = new BinaryWriter()): BinaryWriter {
+    for (const v of message.events) {
+      EventInfo.encode(v!, writer.uint32(10).fork()).join();
+    }
+    if (message.total !== 0) {
+      writer.uint32(16).uint32(message.total);
+    }
+    return writer;
+  },
+
+  decode(input: BinaryReader | Uint8Array, length?: number): ListEventsResponse {
+    const reader = input instanceof BinaryReader ? input : new BinaryReader(input);
+    let end = length === undefined ? reader.len : reader.pos + length;
+    const message = createBaseListEventsResponse();
+    while (reader.pos < end) {
+      const tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          if (tag !== 10) {
+            break;
+          }
+
+          message.events.push(EventInfo.decode(reader, reader.uint32()));
+          continue;
+        }
+        case 2: {
+          if (tag !== 16) {
+            break;
+          }
+
+          message.total = reader.uint32();
+          continue;
+        }
+      }
+      if ((tag & 7) === 4 || tag === 0) {
+        break;
+      }
+      reader.skip(tag & 7);
+    }
+    return message;
+  },
+
+  fromJSON(object: any): ListEventsResponse {
+    return {
+      events: globalThis.Array.isArray(object?.events) ? object.events.map((e: any) => EventInfo.fromJSON(e)) : [],
+      total: isSet(object.total) ? globalThis.Number(object.total) : 0,
+    };
+  },
+
+  toJSON(message: ListEventsResponse): unknown {
+    const obj: any = {};
+    if (message.events?.length) {
+      obj.events = message.events.map((e) => EventInfo.toJSON(e));
+    }
+    if (message.total !== 0) {
+      obj.total = Math.round(message.total);
+    }
+    return obj;
+  },
+
+  create<I extends Exact<DeepPartial<ListEventsResponse>, I>>(base?: I): ListEventsResponse {
+    return ListEventsResponse.fromPartial(base ?? ({} as any));
+  },
+  fromPartial<I extends Exact<DeepPartial<ListEventsResponse>, I>>(object: I): ListEventsResponse {
+    const message = createBaseListEventsResponse();
+    message.events = object.events?.map((e) => EventInfo.fromPartial(e)) || [];
+    message.total = object.total ?? 0;
+    return message;
+  },
+};
+
 export type EventServiceService = typeof EventServiceService;
 export const EventServiceService = {
   createEvent: {
@@ -1526,6 +1705,15 @@ export const EventServiceService = {
     responseSerialize: (value: CheckAttendeeResponse) => Buffer.from(CheckAttendeeResponse.encode(value).finish()),
     responseDeserialize: (value: Buffer) => CheckAttendeeResponse.decode(value),
   },
+  listEvents: {
+    path: "/EventService/ListEvents",
+    requestStream: false,
+    responseStream: false,
+    requestSerialize: (value: ListEventsRequest) => Buffer.from(ListEventsRequest.encode(value).finish()),
+    requestDeserialize: (value: Buffer) => ListEventsRequest.decode(value),
+    responseSerialize: (value: ListEventsResponse) => Buffer.from(ListEventsResponse.encode(value).finish()),
+    responseDeserialize: (value: Buffer) => ListEventsResponse.decode(value),
+  },
 } as const;
 
 export interface EventServiceServer extends UntypedServiceImplementation {
@@ -1536,6 +1724,7 @@ export interface EventServiceServer extends UntypedServiceImplementation {
   addAttendee: handleUnaryCall<AddAttendeeRequest, AddAttendeeResponse>;
   removeAttendee: handleUnaryCall<RemoveAttendeeRequest, RemoveAttendeeResponse>;
   checkAttendee: handleUnaryCall<CheckAttendeeRequest, CheckAttendeeResponse>;
+  listEvents: handleUnaryCall<ListEventsRequest, ListEventsResponse>;
 }
 
 export interface EventServiceClient extends Client {
@@ -1643,6 +1832,21 @@ export interface EventServiceClient extends Client {
     metadata: Metadata,
     options: Partial<CallOptions>,
     callback: (error: ServiceError | null, response: CheckAttendeeResponse) => void,
+  ): ClientUnaryCall;
+  listEvents(
+    request: ListEventsRequest,
+    callback: (error: ServiceError | null, response: ListEventsResponse) => void,
+  ): ClientUnaryCall;
+  listEvents(
+    request: ListEventsRequest,
+    metadata: Metadata,
+    callback: (error: ServiceError | null, response: ListEventsResponse) => void,
+  ): ClientUnaryCall;
+  listEvents(
+    request: ListEventsRequest,
+    metadata: Metadata,
+    options: Partial<CallOptions>,
+    callback: (error: ServiceError | null, response: ListEventsResponse) => void,
   ): ClientUnaryCall;
 }
 
