@@ -1,0 +1,2 @@
+redis:
+  url: redis://:yourpassword@redis_mq:6379 

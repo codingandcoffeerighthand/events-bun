@@ -5,9 +5,11 @@ export class Uc {
     private readonly _notiService: NotiService
   ) { }
   notiToAllAtendeesEventCancel(event_id: string) {
+    console.log(`get info about cancel event ${event_id} and noti to all atendees`);
     this._notiService.sendNoti(`get info about cancel event ${event_id} and noti to all atendees`);
   };
   notiToAllAtendeesEventUpdate(event_id: string) {
+    console.log(`get info about updated event ${event_id} and noti to all atendees`);
     this._notiService.sendNoti(`get info about updated event ${event_id} and noti to all atendees`);
   };
 }

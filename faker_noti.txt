@@ -1,0 +1,6 @@
+
+get info about updated event 0 and noti to all atendees
+get info about updated event 1 and noti to all atendees
+get info about updated event 2 and noti to all atendees
+get info about updated event 3 and noti to all atendees
+get info about updated event 4 and noti to all atendees

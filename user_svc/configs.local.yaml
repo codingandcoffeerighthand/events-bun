@@ -1,6 +1,6 @@
 port: 3000
 db:
-  host: postgres_db
+  host: localhost
   port: 5432
   user: user_svc
   password: user_svc
@@ -11,4 +11,4 @@ jwt:
   accessTokenTTL: 15m
   refreshTokenTTL: 7d
 events:
-  url: events_svc:5002
+  url: 0.0.0.0:5002

@@ -3,9 +3,10 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
-    "api": "bun run --watch ./user_svc/cmd/main.ts -c ./user_svc/configs.yaml",
-    "user_db": "bun run ./user_svc/cmd/main.ts -c ./user_svc/configs.yaml -db ./user_svc/db/migrations/up.sql",
-    "event": "bun run --watch ./event_svc/cmd/main.ts -c ./event_svc/configs.yaml"
+    "api": "bun run --watch ./user_svc/cmd/main.ts -c ./user_svc/configs.local.yaml",
+    "user_db": "bun run ./user_svc/cmd/main.ts -c ./user_svc/configs.local.yaml -db ./user_svc/db/migrations/up.sql",
+    "event": "bun run --watch ./event_svc/cmd/main.ts -c ./event_svc/configs.local.yaml",
+    "noti": "bun run --watch ./noti_svc/cmd/main.ts -c ./noti_svc/configs.local.yaml"
   },
   "devDependencies": {
     "@types/bun": "latest",

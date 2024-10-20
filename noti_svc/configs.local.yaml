@@ -1,0 +1,2 @@
+redis:
+  url: redis://:yourpassword@localhost:6379 

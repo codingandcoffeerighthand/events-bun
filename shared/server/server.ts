@@ -7,7 +7,7 @@ import { errHandler, notFoundHandler } from "../middleware/errHandler";
 
 export class App {
 	private app: express.Application;
-	private _cleanup: () => void = () => {};
+	private _cleanup: () => void = () => { };
 	constructor() {
 		this.app = express();
 		this.app.use(cors());
@@ -30,6 +30,9 @@ export class App {
 	}
 
 	start(port: number) {
+		this.app.get("/", (req, res) => {
+			res.send("Hello World!");
+		})
 		this.app.use(notFoundHandler, errHandler);
 		const server = this.app.listen(port, () => {
 			console.log(`Listening on port ${port}`);

@@ -1,5 +1,5 @@
 mongo:
-  url: mongodb://root:example@localhost:27017
+  url: mongodb://root:example@mongo_db:27017
 addr: localhost:5002
 redis:
-  url: redis://:yourpassword@localhost:6379  
+  url: redis://:yourpassword@redis_mq:6379  

@@ -1,9 +1,9 @@
 import { getFlag } from "@shared/utils/getFlag"
-import type { Config } from "../config/config"
+import type { Config } from "../internal/config/config"
 import { getConfigs } from "@shared/utils/configs"
-import { NotiService } from "../infras/noti/noti"
-import { EventSub } from "../infras/event_sub"
-import { Uc } from "../uc"
+import { NotiService } from "../internal/infras/noti/noti"
+import { EventSub } from "../internal/infras/event_sub"
+import { Uc } from "../internal/uc"
 
 async function main() {
   const cfg = await getConfigs<Config>(getFlag("-c"))
@@ -17,6 +17,14 @@ async function main() {
   eventSub.subscribeCancelEvent((event) => {
     uc.notiToAllAtendeesEventCancel(event.event_id)
   })
+
+  await new Promise((resolve) => {
+    process.on('SIGINT', async () => {
+      console.log('\nGracefully shutting down...');
+      resolve(undefined);
+    });
+  });
+
 }
 
 main()
